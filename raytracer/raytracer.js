@@ -101,7 +101,7 @@ var Surfaces;
     Surfaces.shiny = {
         diffuse: function (pos) { return Color.white; },
         specular: function (pos) { return Color.grey; },
-        reflect: function (pos) { return 0.7; },
+        reflect: function (pos) { return 0.4; },
         roughness: 250
     };
     Surfaces.checkerboard = {
@@ -127,7 +127,7 @@ var Surfaces;
 })(Surfaces || (Surfaces = {}));
 var RayTracer = (function () {
     function RayTracer() {
-        this.maxDepth = 5;
+        this.maxDepth = 2;
     }
     RayTracer.prototype.intersections = function (ray, scene) {
         var closest = +Infinity;
@@ -224,8 +224,9 @@ function defaultScene() {
 }
 function exec() {
     var canv = document.createElement("canvas");
-    canv.width = 256;
-    canv.height = 256;
+    canv.width = 64;
+    canv.height = 64;
+    canv.style='width:'+(canv.width*2)+'px;'+'height:'+(canv.height*2)+'px;'
     document.body.appendChild(canv);
     var ctx = canv.getContext("2d");
     var rayTracer = new RayTracer();
