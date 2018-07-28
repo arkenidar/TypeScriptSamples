@@ -35,8 +35,11 @@ var Color = (function () {
             g: Math.floor(legalize(c.g) * 255),
             b: Math.floor(legalize(c.b) * 255)
         };
-    };
+    }
+    Color.white=new Color(1,1,1)
+    Color.yellow=new Color(1,1,0)
     Color.green=new Color(0,1,0)
+    Color.red=new Color(1,0,0)
     Color.white = new Color(1.0, 1.0, 1.0);
     Color.grey = new Color(0.5, 0.5, 0.5);
     Color.black = new Color(0.0, 0.0, 0.0);
@@ -99,19 +102,25 @@ var Plane = (function () {
 }());
 var Surfaces;
 (function (Surfaces) {
-    Surfaces.shiny = {
+    Surfaces.shinyWhite = {
         diffuse: function (pos) { return Color.white; },
-        specular: function (pos) { return Color.grey; },
+        specular: function (pos) { return Color.white; },
         reflect: function (pos) { return 0.2; },
         roughness: 250
-    };
+    }
+    Surfaces.shinyRed = {
+        diffuse: function (pos) { return Color.red; },
+        specular: function (pos) { return Color.white; },
+        reflect: function (pos) { return 0.5; },
+        roughness: 250
+    }
     Surfaces.checkerboard = {
         diffuse: function (pos) {
-            if ((Math.floor(pos.z) + Math.floor(pos.x)) % 2 !== 0) {
-                return Color.grey;
+            if( Math.sqrt(pos.z**2+pos.x**2) < 7) {
+                return Color.green;
             }
             else {
-                return Color.green;
+                return Color.yellow;
             }
         },
         specular: function (pos) { return Color.white; },
@@ -128,7 +137,7 @@ var Surfaces;
 })(Surfaces || (Surfaces = {}));
 var RayTracer = (function () {
     function RayTracer() {
-        this.maxDepth = 2;
+        this.maxDepth = 0;
     }
     RayTracer.prototype.intersections = function (ray, scene) {
         var closest = +Infinity;
@@ -211,29 +220,32 @@ var RayTracer = (function () {
     };
     return RayTracer;
 }());
-function defaultScene() {
+function defaultScene(x,z) {
     return {
         things: [new Plane(new Vector(0.0, 1.0, 0.0), 0.0, Surfaces.checkerboard),
-            new Sphere(new Vector(0.0, 1.0, -0.25), 1.0, Surfaces.shiny),
-            new Sphere(new Vector(-1.0, 0.5, 1.5), 0.5, Surfaces.shiny)],
-        lights: [{ pos: new Vector(-2.0, 2.5, 0.0), color: new Color(1,0.5,1) },
-            { pos: new Vector(1.5, 2.5, 1.5), color: new Color(1,1,1) },
-            { pos: new Vector(1.5, 2.5, -1.5), color: new Color(0.5,1,1) },
-            { pos: new Vector(0.0, 3.5, 0.0), color: new Color(1,1,0.5) }],
-        camera: new Camera(new Vector(parseFloat(document.all.camera.value), 2.0, 4.0), new Vector(-1.0, 0.5, 0.0))
+            new Sphere(new Vector(-1, 2, 0), 2, Surfaces.shinyRed),
+            new Sphere(new Vector(0, 1, -5), 1, Surfaces.shinyWhite)],
+        lights: [//{ pos: new Vector(-2.0, 10, 0.0), color: new Color(1,1,1) },
+            //{ pos: new Vector(-1.5, 10, 1.5), color: new Color(1,1,1) },
+            //{ pos: new Vector(1.5, 10, -1.5), color: new Color(1,1,1) },
+            { pos: new Vector(0.0, 10, 0.0), color: new Color(1,1,1) }],
+        camera: new Camera(new Vector(x, 5, 0), new Vector(x+1,5,0))
     };
 }
 function exec() {
     var canv = document.createElement("canvas");
-    canv.width = 64;
-    canv.height = 64;
+    canv.width = 128;
+    canv.height = 128;
     canv.style='width:'+(canv.width*2)+'px;'+'height:'+(canv.height*2)+'px;'
     document.body.appendChild(canv);
     var ctx = canv.getContext("2d");
     var rayTracer = new RayTracer();
-    let renderItNow=()=>rayTracer.render(defaultScene(), ctx, canv.width, canv.height)
-    document.all.camera.oninput=renderItNow
-    renderItNow()
+    let renderItNow=(x,z)=>rayTracer.render(defaultScene(x,z), ctx, canv.width, canv.height)
+    window.renderItNow=renderItNow
+    x=()=>10-parseFloat(2*(20-document.all.camera.value/3))
+    z=x
+    document.all.camera.oninput=()=>renderItNow(x(),z())
+    renderItNow(x(),z())
 }
 exec()
 //# sourceMappingURL=raytracer.js.map
