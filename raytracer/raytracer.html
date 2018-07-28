@@ -1,8 +1,12 @@
+<!doctype html>
 <html>
 <head>
     <title>Raytracer</title>
+    <meta charset="utf-8">
 </head>
-<body >
+<body>
+	<input type="range" name="camera" min="0" max="10" value="3"> <br>
+	<script>document.all.camera.oninput=()=>console.log(document.all.camera.value)</script>
     <script src="raytracer.js"></script>
 </body>
 </html>
