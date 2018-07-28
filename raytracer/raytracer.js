@@ -36,6 +36,7 @@ var Color = (function () {
             b: Math.floor(legalize(c.b) * 255)
         };
     };
+    Color.green=new Color(0,1,0)
     Color.white = new Color(1.0, 1.0, 1.0);
     Color.grey = new Color(0.5, 0.5, 0.5);
     Color.black = new Color(0.0, 0.0, 0.0);
@@ -101,16 +102,16 @@ var Surfaces;
     Surfaces.shiny = {
         diffuse: function (pos) { return Color.white; },
         specular: function (pos) { return Color.grey; },
-        reflect: function (pos) { return 0.4; },
+        reflect: function (pos) { return 0.2; },
         roughness: 250
     };
     Surfaces.checkerboard = {
         diffuse: function (pos) {
             if ((Math.floor(pos.z) + Math.floor(pos.x)) % 2 !== 0) {
-                return Color.white;
+                return Color.grey;
             }
             else {
-                return Color.black;
+                return Color.green;
             }
         },
         specular: function (pos) { return Color.white; },
@@ -215,10 +216,10 @@ function defaultScene() {
         things: [new Plane(new Vector(0.0, 1.0, 0.0), 0.0, Surfaces.checkerboard),
             new Sphere(new Vector(0.0, 1.0, -0.25), 1.0, Surfaces.shiny),
             new Sphere(new Vector(-1.0, 0.5, 1.5), 0.5, Surfaces.shiny)],
-        lights: [{ pos: new Vector(-2.0, 2.5, 0.0), color: new Color(0.49, 0.07, 0.07) },
-            { pos: new Vector(1.5, 2.5, 1.5), color: new Color(0.07, 0.07, 0.49) },
-            { pos: new Vector(1.5, 2.5, -1.5), color: new Color(0.07, 0.49, 0.071) },
-            { pos: new Vector(0.0, 3.5, 0.0), color: new Color(0.21, 0.21, 0.35) }],
+        lights: [{ pos: new Vector(-2.0, 2.5, 0.0), color: new Color(1,0.5,1) },
+            { pos: new Vector(1.5, 2.5, 1.5), color: new Color(1,1,1) },
+            { pos: new Vector(1.5, 2.5, -1.5), color: new Color(0.5,1,1) },
+            { pos: new Vector(0.0, 3.5, 0.0), color: new Color(1,1,0.5) }],
         camera: new Camera(new Vector(parseFloat(document.all.camera.value), 2.0, 4.0), new Vector(-1.0, 0.5, 0.0))
     };
 }
