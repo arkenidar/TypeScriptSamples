@@ -229,7 +229,7 @@ function defaultScene(x,z) {
             //{ pos: new Vector(-1.5, 10, 1.5), color: new Color(1,1,1) },
             //{ pos: new Vector(1.5, 10, -1.5), color: new Color(1,1,1) },
             { pos: new Vector(0.0, 10, 0.0), color: new Color(1,1,1) }],
-        camera: new Camera(new Vector(x, 5, 0), new Vector(x+1,5,0))
+        camera: new Camera(new Vector(x, 5, z), new Vector(0,5,0))
     };
 }
 function exec() {
@@ -242,8 +242,9 @@ function exec() {
     var rayTracer = new RayTracer();
     let renderItNow=(x,z)=>rayTracer.render(defaultScene(x,z), ctx, canv.width, canv.height)
     window.renderItNow=renderItNow
-    x=()=>10-parseFloat(2*(20-document.all.camera.value/3))
-    z=x
+    v=()=>10-parseFloat(2*(20-document.all.camera.value/3))
+    x=()=>Math.cos(v())*25
+    z=()=>Math.sin(v())*25
     document.all.camera.oninput=()=>renderItNow(x(),z())
     renderItNow(x(),z())
 }
