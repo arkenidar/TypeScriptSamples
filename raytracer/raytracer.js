@@ -232,21 +232,20 @@ function defaultScene(x,z) {
         camera: new Camera(new Vector(x, 5, z), new Vector(0,5,0))
     };
 }
-function exec() {
-    var canv = document.createElement("canvas");
-    canv.width = 128;
-    canv.height = 128;
-    canv.style='width:'+(canv.width*2)+'px;'+'height:'+(canv.height*2)+'px;'
-    document.body.appendChild(canv);
-    var ctx = canv.getContext("2d");
-    var rayTracer = new RayTracer();
-    let renderItNow=(x,z)=>rayTracer.render(defaultScene(x,z), ctx, canv.width, canv.height)
-    window.renderItNow=renderItNow
-    v=()=>10-parseFloat(2*(20-document.all.camera.value/3))
-    x=()=>Math.cos(v())*25
-    z=()=>Math.sin(v())*25
-    document.all.camera.oninput=()=>renderItNow(x(),z())
-    renderItNow(x(),z())
-}
-exec()
-//# sourceMappingURL=raytracer.js.map
+
+let canv=document.createElement('canvas')
+canv.height=canv.width=128
+canv.style='width:'+(canv.width*2)+'px;'+'height:'+(canv.height*2)+'px;'
+document.body.appendChild(canv)
+let ctx = canv.getContext('2d')
+let rayTracer = new RayTracer()
+let renderItNow=(x,z)=>rayTracer.render(defaultScene(x,z),ctx,canv.width,canv.height)
+window.renderItNow=renderItNow
+v=()=>10-parseFloat(2*(20-document.all.camera.value/3))
+x=()=>Math.cos(v())*25
+z=()=>Math.sin(v())*25
+//document.all.camera.oninput=()=>renderItNow(x(),z())
+//renderItNow(x(),z())
+let r=()=>renderItNow(x(),z())
+let t=()=>{r(); setTimeout(t,500)}
+t()
