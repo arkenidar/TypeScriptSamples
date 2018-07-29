@@ -105,7 +105,7 @@ class Surfaces{
             diffuse: function (pos) { return Color.grey },
             specular: function (pos) { return Color.white },
             reflect: function (pos) { return 0.3 },
-            roughness: 250
+            roughness: 10
         }
     }
 
@@ -114,7 +114,7 @@ class Surfaces{
             diffuse: function (pos) { return Color.red },
             specular: function (pos) { return Color.white },
             reflect: function (pos) { return 0.3 },
-            roughness: 250
+            roughness: 50
         }
     }
 
@@ -152,7 +152,7 @@ class Surfaces{
 
 class RayTracer{
     constructor(){
-        this.maxDepth = 1000
+        this.maxDepth = 0
     }
     intersections(ray, scene) {
         let closest = +Infinity
