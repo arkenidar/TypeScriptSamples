@@ -104,7 +104,7 @@ class Surfaces{
         return {
             diffuse: function (pos) { return Color.white },
             specular: function (pos) { return Color.white },
-            reflect: function (pos) { return 0.2 },
+            reflect: function (pos) { return 0.3 },
             roughness: 250
         }
     }
@@ -113,20 +113,23 @@ class Surfaces{
         return {
             diffuse: function (pos) { return Color.red },
             specular: function (pos) { return Color.white },
-            reflect: function (pos) { return 0.5 },
+            reflect: function (pos) { return 0.3 },
             roughness: 250
         }
     }
 
     static get computed(){
         return {
-            checker: (pos)=>((Math.floor(pos.z/15) + Math.floor(pos.x/15)) % 2) !== 0,
+            checker: (pos)=>((Math.floor(pos.z/1000) + Math.floor(pos.x/1000)) % 2) !== 0,
             circle: (pos)=>Math.sqrt(pos.z**2+pos.x**2) < 700,
             mixed: function(pos){
                 return this.checker(pos)&&this.circle(pos)
             },
+            selected: function(pos){
+                return this.checker(pos)
+            },
             diffuse: function (pos) {
-                if(this.circle(pos)){
+                if(this.selected(pos)){
                     return Color.green
                 }
                 else {
@@ -135,11 +138,11 @@ class Surfaces{
             },
             specular: function (pos) { return Color.white },
             reflect: function (pos) {
-                if (true) {
-                    return 0.3
+                if (this.selected(pos)) {
+                    return 1
                 }
                 else {
-                    return 0.5
+                    return 0.9
                 }
             },
             roughness: 150
@@ -239,13 +242,16 @@ function defaultScene(x,z) {
 
             new Sphere(new Vector(0, 200, 0), 200, Surfaces.shinyRed),
 
-            new Sphere(new Vector(0, 100, 500), 100, Surfaces.shinyRed),
-            new Sphere(new Vector(0, 100, -500), 100, Surfaces.shinyWhite),
-            new Sphere(new Vector(500, 100, 0), 100, Surfaces.shinyWhite),
-            new Sphere(new Vector(-500, 100, 0), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(0, 100, 150), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(0, 100, -150), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(150, 100, 0), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(-150, 100, 0), 100, Surfaces.shinyWhite),
         ],
         lights: [
-            { pos: new Vector(0,1000,0), color: new Color(1,1,1) }
+            { pos: new Vector(-500,800,-500), color: new Color(1,1,1) },
+            { pos: new Vector(-500,800,500), color: new Color(1,1,1) },
+            { pos: new Vector(500,800,-500), color: new Color(1,1,1) },
+            { pos: new Vector(500,800,500), color: new Color(1,1,1) },
         ],
         camera: new Camera(new Vector(x,500,z), new Vector(0,500,0))
     }
@@ -263,3 +269,7 @@ let z=()=>Math.sin(rotationValue())*document.all.cameraZoom.value*500
 let renderScene=()=>renderSceneWithCamera(x(),z())
 document.all.cameraRotation.oninput=document.all.cameraZoom.oninput=()=>setTimeout(renderScene)
 renderScene()
+
+let rotateIncrement=()=>document.all.cameraRotation.value=parseInt(document.all.cameraRotation.value)+1; if(document.all.cameraRotation.value==document.all.cameraRotation.max)document.all.cameraRotation.value=document.all.cameraRotation.min
+let rotate=()=>{ rotateIncrement(); setTimeout(renderScene); setTimeout(rotate,500)}
+rotate()
