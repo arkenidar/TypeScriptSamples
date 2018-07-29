@@ -118,10 +118,15 @@ class Surfaces{
         }
     }
 
-    static get checkerboard(){
+    static get computed(){
         return {
+            checker: (pos)=>((Math.floor(pos.z/15) + Math.floor(pos.x/15)) % 2) !== 0,
+            circle: (pos)=>Math.sqrt(pos.z**2+pos.x**2) < 700,
+            mixed: function(pos){
+                return this.checker(pos)&&this.circle(pos)
+            },
             diffuse: function (pos) {
-                if( Math.sqrt(pos.z**2+pos.x**2) < 7) {
+                if(this.circle(pos)){
                     return Color.green
                 }
                 else {
@@ -130,11 +135,11 @@ class Surfaces{
             },
             specular: function (pos) { return Color.white },
             reflect: function (pos) {
-                if ((Math.floor(pos.z) + Math.floor(pos.x)) % 2 !== 0) {
-                    return 0.1
+                if (true) {
+                    return 0.3
                 }
                 else {
-                    return 0.7
+                    return 0.5
                 }
             },
             roughness: 150
@@ -144,7 +149,7 @@ class Surfaces{
 
 class RayTracer{
     constructor(){
-        this.maxDepth = 0
+        this.maxDepth = 2
     }
     intersections(ray, scene) {
         let closest = +Infinity
@@ -229,30 +234,32 @@ class RayTracer{
 
 function defaultScene(x,z) {
     return {
-        things: [new Plane(new Vector(0.0, 1.0, 0.0), 0.0, Surfaces.checkerboard),
-            new Sphere(new Vector(-1, 2, 0), 2, Surfaces.shinyRed),
-            new Sphere(new Vector(0, 1, -5), 1, Surfaces.shinyWhite)],
-        lights: [//{ pos: new Vector(-2.0, 10, 0.0), color: new Color(1,1,1) },
-            //{ pos: new Vector(-1.5, 10, 1.5), color: new Color(1,1,1) },
-            //{ pos: new Vector(1.5, 10, -1.5), color: new Color(1,1,1) },
-            { pos: new Vector(0.0, 10, 0.0), color: new Color(1,1,1) }],
-        camera: new Camera(new Vector(x, 5, z), new Vector(0,5,0))
+        things: [
+            new Plane(new Vector(0,1,0),0,Surfaces.computed),
+
+            new Sphere(new Vector(0, 200, 0), 200, Surfaces.shinyRed),
+
+            new Sphere(new Vector(0, 100, 500), 100, Surfaces.shinyRed),
+            new Sphere(new Vector(0, 100, -500), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(500, 100, 0), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(-500, 100, 0), 100, Surfaces.shinyWhite),
+        ],
+        lights: [
+            { pos: new Vector(0,1000,0), color: new Color(1,1,1) }
+        ],
+        camera: new Camera(new Vector(x,500,z), new Vector(0,500,0))
     }
 }
 
-let canv=document.createElement('canvas')
-canv.height=canv.width=128
-canv.style='width:'+(canv.width*2)+'px;'+'height:'+(canv.height*2)+'px;'
-document.body.appendChild(canv)
-let ctx = canv.getContext('2d')
+let canv=document.all.canvas
+let ctx=canv.getContext('2d')
 let rayTracer = new RayTracer()
-let renderItNow=(x,z)=>rayTracer.render(defaultScene(x,z),ctx,canv.width,canv.height)
-window.renderItNow=renderItNow
-v=()=>10-parseFloat(2*(20-document.all.camera.value/3))
-x=()=>Math.cos(v())*25
-z=()=>Math.sin(v())*25
-//document.all.camera.oninput=()=>renderItNow(x(),z())
-//renderItNow(x(),z())
-let r=()=>renderItNow(x(),z())
-let t=()=>{r(); setTimeout(t,500)}
-t()
+let renderSceneWithCamera=(x,z)=>rayTracer.render(defaultScene(x,z),ctx,canv.width,canv.height)
+
+let rotationValue=()=>(document.all.cameraRotation.value/document.all.cameraRotation.max)*Math.PI*2
+let x=()=>Math.cos(rotationValue())*document.all.cameraZoom.value*500
+let z=()=>Math.sin(rotationValue())*document.all.cameraZoom.value*500
+
+let renderScene=()=>renderSceneWithCamera(x(),z())
+document.all.cameraRotation.oninput=document.all.cameraZoom.oninput=()=>setTimeout(renderScene)
+renderScene()
