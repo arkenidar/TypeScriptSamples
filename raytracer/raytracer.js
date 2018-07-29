@@ -102,7 +102,7 @@ class Plane{
 class Surfaces{
     static get shinyWhite(){
         return {
-            diffuse: function (pos) { return Color.white },
+            diffuse: function (pos) { return Color.grey },
             specular: function (pos) { return Color.white },
             reflect: function (pos) { return 0.3 },
             roughness: 250
@@ -152,7 +152,7 @@ class Surfaces{
 
 class RayTracer{
     constructor(){
-        this.maxDepth = 2
+        this.maxDepth = 1000
     }
     intersections(ray, scene) {
         let closest = +Infinity
@@ -236,40 +236,40 @@ class RayTracer{
 }
 
 function defaultScene(x,z) {
+    let cameraPosition=new Vector(x,500,z)
     return {
         things: [
             new Plane(new Vector(0,1,0),0,Surfaces.computed),
 
             new Sphere(new Vector(0, 200, 0), 200, Surfaces.shinyRed),
 
-            new Sphere(new Vector(0, 100, 150), 100, Surfaces.shinyWhite),
-            new Sphere(new Vector(0, 100, -150), 100, Surfaces.shinyWhite),
-            new Sphere(new Vector(150, 100, 0), 100, Surfaces.shinyWhite),
-            new Sphere(new Vector(-150, 100, 0), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(0, 300, 400), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(0, 300, -400), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(400, 300, 0), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(-400, 300, 0), 100, Surfaces.shinyWhite),
         ],
         lights: [
-            { pos: new Vector(-500,800,-500), color: new Color(1,1,1) },
-            { pos: new Vector(-500,800,500), color: new Color(1,1,1) },
-            { pos: new Vector(500,800,-500), color: new Color(1,1,1) },
-            { pos: new Vector(500,800,500), color: new Color(1,1,1) },
+            { pos: cameraPosition, color: new Color(1,1,1) },
+            { pos: new Vector(0,600,0), color: new Color(1,1,1) },
         ],
-        camera: new Camera(new Vector(x,500,z), new Vector(0,500,0))
+        camera: new Camera(cameraPosition, new Vector(0,500,0))
     }
 }
 
-let canv=document.all.canvas
+let {all}=document
+let canv=all.canvas
 let ctx=canv.getContext('2d')
-let rayTracer = new RayTracer()
+let rayTracer=new RayTracer()
 let renderSceneWithCamera=(x,z)=>rayTracer.render(defaultScene(x,z),ctx,canv.width,canv.height)
 
-let rotationValue=()=>(document.all.cameraRotation.value/document.all.cameraRotation.max)*Math.PI*2
-let x=()=>Math.cos(rotationValue())*document.all.cameraZoom.value*500
-let z=()=>Math.sin(rotationValue())*document.all.cameraZoom.value*500
+let rotationValue=()=>(all.cameraRotation.value/all.cameraRotation.max)*Math.PI*2
+let x=()=>Math.cos(rotationValue())*all.cameraZoom.value*500
+let z=()=>Math.sin(rotationValue())*all.cameraZoom.value*500
 
 let renderScene=()=>renderSceneWithCamera(x(),z())
-document.all.cameraRotation.oninput=document.all.cameraZoom.oninput=()=>setTimeout(renderScene)
+all.cameraRotation.oninput=all.cameraZoom.oninput=()=>setTimeout(renderScene)
 renderScene()
 
-let rotateIncrement=()=>document.all.cameraRotation.value=parseInt(document.all.cameraRotation.value)+1; if(document.all.cameraRotation.value==document.all.cameraRotation.max)document.all.cameraRotation.value=document.all.cameraRotation.min
+let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.value)+2; if(all.cameraRotation.value==all.cameraRotation.max)all.cameraRotation.value=all.cameraRotation.min}
 let rotate=()=>{ rotateIncrement(); setTimeout(renderScene); setTimeout(rotate,500)}
 rotate()
