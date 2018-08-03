@@ -101,52 +101,55 @@ class Plane{
 
 class Surfaces{
     static get shinyWhite(){
-        return {
-            diffuse: function (pos) { return Color.grey },
-            specular: function (pos) { return Color.white },
-            reflect: function (pos) { return 0.3 },
-            roughness: 10
+        class ShinyWhite{
+            static diffuse(pos) { return Color.grey }
+            static specular(pos) { return Color.white }
+            static reflect(pos) { return 0.3 }
+            static get roughness(){ return 10 }
         }
+        return ShinyWhite
     }
 
     static get shinyRed(){
-        return {
-            diffuse: function (pos) { return Color.red },
-            specular: function (pos) { return Color.white },
-            reflect: function (pos) { return 0.3 },
-            roughness: 50
+        class ShinyRed{
+            static diffuse(pos) { return Color.red }
+            static specular(pos) { return Color.white }
+            static reflect(pos) { return 0.3 }
+            static get roughness(){ return 50 }
         }
+        return ShinyRed
     }
 
     static get computed(){
-        return {
-            checker: (pos)=>((Math.floor(pos.z/1000) + Math.floor(pos.x/1000)) % 2) !== 0,
-            circle: (pos)=>Math.sqrt(pos.z**2+pos.x**2) < 700,
-            mixed: function(pos){
+        class Computed{
+            static checker(pos){ return (((Math.floor(pos.z/1000) + Math.floor(pos.x/1000)) % 2) !== 0) }
+            static circle(pos){ return (Math.sqrt(pos.z**2+pos.x**2) < 700) }
+            static mixed(pos){
                 return this.checker(pos)&&this.circle(pos)
-            },
-            selected: function(pos){
+            }
+            static selected(pos){
                 return this.checker(pos)
-            },
-            diffuse: function (pos) {
+            }
+            static diffuse(pos) {
                 if(this.selected(pos)){
                     return Color.green
                 }
                 else {
                     return Color.yellow
                 }
-            },
-            specular: function (pos) { return Color.white },
-            reflect: function (pos) {
+            }
+            static specular(pos) { return Color.white }
+            static reflect(pos) {
                 if (this.selected(pos)) {
                     return 1
                 }
                 else {
                     return 0.9
                 }
-            },
-            roughness: 150
+            }
+            static get roughness(){ return 150 }
         }
+        return Computed
     }
 }
 
