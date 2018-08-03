@@ -152,7 +152,7 @@ class Surfaces{
 
 class RayTracer{
     constructor(){
-        this.maxDepth = 0
+        this.maxDepth = 3
     }
     intersections(ray, scene) {
         let closest = +Infinity
@@ -219,9 +219,9 @@ class RayTracer{
         return scene.lights.reduce(addLight, Color.defaultColor)
     }
     render(scene, ctx, screenWidth, screenHeight) {
-        let getPoint = function (x, y, camera) {
-            let recenterX = function (x) { return (x - (screenWidth / 2.0)) / 2.0 / screenWidth }
-            let recenterY = function (y) { return -(y - (screenHeight / 2.0)) / 2.0 / screenHeight }
+        function getPoint(x, y, camera) {
+            function recenterX(x) { return (x - (screenWidth / 2.0)) / 2.0 / screenWidth }
+            function recenterY(y) { return -(y - (screenHeight / 2.0)) / 2.0 / screenHeight }
             return Vector.norm(Vector.plus(camera.forward, Vector.plus(Vector.times(recenterX(x), camera.right), Vector.times(recenterY(y), camera.up))))
         }
         for (let y = 0; y < screenHeight; y++) {
