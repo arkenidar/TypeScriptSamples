@@ -100,6 +100,17 @@ class Plane{
 }
 
 class Surfaces{
+
+    static shinyColor(color){
+        class ShinyColor{
+            static diffuse(pos) { return color }
+            static specular(pos) { return Color.white }
+            static reflect(pos) { return 0.3 }
+            static get roughness(){ return 10 }
+        }
+        return ShinyColor
+    }
+
     static get shinyWhite(){
         class ShinyWhite{
             static diffuse(pos) { return Color.grey }
@@ -246,10 +257,10 @@ function defaultScene(x,z) {
 
             new Sphere(new Vector(0, 200, 0), 200, Surfaces.shinyRed),
 
-            new Sphere(new Vector(0, 300, 400), 100, Surfaces.shinyWhite),
-            new Sphere(new Vector(0, 300, -400), 100, Surfaces.shinyWhite),
-            new Sphere(new Vector(400, 300, 0), 100, Surfaces.shinyWhite),
-            new Sphere(new Vector(-400, 300, 0), 100, Surfaces.shinyWhite),
+            new Sphere(new Vector(0, 300, 400), 100, Surfaces.shinyColor(Color.grey)),
+            new Sphere(new Vector(0, 300, -400), 100, Surfaces.shinyColor(Color.green)),
+            new Sphere(new Vector(400, 300, 0), 100, Surfaces.shinyColor(Color.black)),
+            new Sphere(new Vector(-400, 300, 0), 100, Surfaces.shinyColor(Color.yellow)),
         ],
         lights: [
             { pos: cameraPosition, color: new Color(1,1,1) },
