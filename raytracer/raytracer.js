@@ -301,8 +301,8 @@ let renderScene=()=>renderSceneWithCamera(x(),z())
 all.cameraRotation.oninput=all.cameraZoom.oninput=()=>setTimeout(renderScene)
 renderScene()
 
-let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.value)+2; if(all.cameraRotation.value==all.cameraRotation.max)all.cameraRotation.value=all.cameraRotation.min}
-let rotate=()=>{ rotateIncrement(); setTimeout(renderScene); setTimeout(rotate,500)}
+let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.value)+10; if(all.cameraRotation.value==all.cameraRotation.max)all.cameraRotation.value=all.cameraRotation.min}
+let rotate=()=>{ rotateIncrement(); setTimeout(renderScene); setTimeout(rotate,100)}
 rotate()
 
-setInterval(()=>all.stats.innerHTML=JSON.stringify(rayTracer.stats),800)
+setInterval(()=>all.stats.innerHTML=JSON.stringify(rayTracer.stats),1500)
