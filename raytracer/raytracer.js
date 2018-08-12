@@ -168,6 +168,7 @@ class RayTracer{
     constructor(){
         this.maxDepth = 3
         this.rayCache={}
+        this.rayCacheSize=0
         this.cachingEnabled=true
     }
     intersections(ray, scene) {
@@ -206,6 +207,7 @@ class RayTracer{
         }
         if(this.cachingEnabled){
             this.rayCache[rayJSON]=color
+            this.rayCacheSize++
         }
         return color
     }
