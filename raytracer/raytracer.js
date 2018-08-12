@@ -167,6 +167,8 @@ class Surfaces{
 class RayTracer{
     constructor(){
         this.maxDepth = 3
+        this.rayCache={}
+        this.cachingEnabled=true
     }
     intersections(ray, scene) {
         let closest = +Infinity
@@ -190,13 +192,22 @@ class RayTracer{
         }
     }
     traceRay(ray, scene, depth) {
+        let color
+        let rayJSON=JSON.stringify(ray)
+        if(this.cachingEnabled && rayJSON in this.rayCache){
+            return this.rayCache[rayJSON]
+        }
         let isect = this.intersections(ray, scene)
         if (isect === undefined) {
-            return Color.background
+            color=Color.background
         }
         else {
-            return this.shade(isect, scene, depth)
+            color=this.shade(isect, scene, depth)
         }
+        if(this.cachingEnabled){
+            this.rayCache[rayJSON]=color
+        }
+        return color
     }
     shade(isect, scene, depth) {
         let d = isect.ray.dir
