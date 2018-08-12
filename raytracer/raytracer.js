@@ -168,8 +168,11 @@ class RayTracer{
     constructor(){
         this.maxDepth = 3
         this.rayCache={}
-        this.rayCacheSize=0
         this.cachingEnabled=true
+        this.stats={
+            rayCacheSize:0,
+            reused:0,
+        }
     }
     intersections(ray, scene) {
         let closest = +Infinity
@@ -196,6 +199,7 @@ class RayTracer{
         let color
         let rayJSON=JSON.stringify(ray)
         if(this.cachingEnabled && rayJSON in this.rayCache){
+            this.stats.reused++
             return this.rayCache[rayJSON]
         }
         let isect = this.intersections(ray, scene)
@@ -207,7 +211,7 @@ class RayTracer{
         }
         if(this.cachingEnabled){
             this.rayCache[rayJSON]=color
-            this.rayCacheSize++
+            this.stats.rayCacheSize++
         }
         return color
     }
@@ -300,3 +304,5 @@ renderScene()
 let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.value)+2; if(all.cameraRotation.value==all.cameraRotation.max)all.cameraRotation.value=all.cameraRotation.min}
 let rotate=()=>{ rotateIncrement(); setTimeout(renderScene); setTimeout(rotate,500)}
 rotate()
+
+setInterval(()=>all.stats.innerHTML=JSON.stringify(rayTracer.stats),800)
