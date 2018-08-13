@@ -17,6 +17,9 @@ class Vector{
     static cross(v1, v2) {
         return new Vector(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x)
     }
+    stringify(){
+        return this.x+','+this.y+','+this.z
+    }
 }
 
 class Color{
@@ -197,10 +200,10 @@ class RayTracer{
     }
     traceRay(ray, scene, depth) {
         let color
-        let rayJSON=JSON.stringify(ray)
-        if(this.cachingEnabled && rayJSON in this.rayCache){
+        let rayString=ray.start.stringify()+'|'+ray.dir.stringify()//JSON.stringify(ray)
+        if(this.cachingEnabled && rayString in this.rayCache){
             this.stats.reused++
-            return this.rayCache[rayJSON]
+            return this.rayCache[rayString]
         }
         let isect = this.intersections(ray, scene)
         if (isect === undefined) {
@@ -210,7 +213,7 @@ class RayTracer{
             color=this.shade(isect, scene, depth)
         }
         if(this.cachingEnabled){
-            this.rayCache[rayJSON]=color
+            this.rayCache[rayString]=color
             this.stats.rayCacheSize++
         }
         return color
@@ -301,7 +304,7 @@ let renderScene=()=>renderSceneWithCamera(x(),z())
 all.cameraRotation.oninput=all.cameraZoom.oninput=()=>setTimeout(renderScene)
 renderScene()
 
-let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.value)+10; if(all.cameraRotation.value==all.cameraRotation.max)all.cameraRotation.value=all.cameraRotation.min}
+let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.value)+4; if(all.cameraRotation.value==all.cameraRotation.max)all.cameraRotation.value=all.cameraRotation.min}
 let rotate=()=>{ rotateIncrement(); setTimeout(renderScene); setTimeout(rotate,100)}
 rotate()
 
