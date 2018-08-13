@@ -308,4 +308,4 @@ let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.va
 let rotate=()=>{ rotateIncrement(); setTimeout(renderScene); setTimeout(rotate,100)}
 rotate()
 
-setInterval(()=>all.stats.innerHTML=JSON.stringify(rayTracer.stats),1500)
+setInterval(()=>all.stats.innerHTML='rayCacheSize:'+rayTracer.stats.rayCacheSize+' reused:'+rayTracer.stats.reused,1500)
