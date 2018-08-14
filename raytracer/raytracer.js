@@ -17,7 +17,7 @@ class Vector{
     static cross(v1, v2) {
         return new Vector(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x)
     }
-    stringify(){
+    toString(){
         return this.x.toPrecision(3)+','+this.y.toPrecision(3)+','+this.z.toPrecision(3)
     }
 }
@@ -170,7 +170,7 @@ class Surfaces{
 class RayTracer{
     constructor(){
         this.maxDepth = 3
-        this.rayCache=new Map()
+        this.rayCache={}
         this.cachingEnabled=true
         this.stats={
             rayCacheSize:0,
@@ -200,7 +200,7 @@ class RayTracer{
     }
     traceRay(ray, scene, depth) {
         let color
-        let rayKey=Object.freeze(ray)//ray.start.stringify()+'|'+ray.dir.stringify()//JSON.stringify(ray)
+        let rayKey=[ray.start,ray.dir]//JSON.stringify(ray)
         if(this.cachingEnabled && rayKey in this.rayCache){
             this.stats.reused++
             return this.rayCache[rayKey]
