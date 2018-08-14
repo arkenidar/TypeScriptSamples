@@ -170,7 +170,7 @@ class Surfaces{
 class RayTracer{
     constructor(){
         this.maxDepth = 3
-        this.rayCache={}
+        this.rayCache=new Map()
         this.cachingEnabled=true
         this.stats={
             rayCacheSize:0,
@@ -200,7 +200,7 @@ class RayTracer{
     }
     traceRay(ray, scene, depth) {
         let color
-        let rayKey=[ray.start,ray.dir]//JSON.stringify(ray)
+        let rayKey=ray.start+'|'+ray.dir//JSON.stringify(ray)
         if(this.cachingEnabled && rayKey in this.rayCache){
             this.stats.reused++
             return this.rayCache[rayKey]
