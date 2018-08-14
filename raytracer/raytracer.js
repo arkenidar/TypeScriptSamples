@@ -200,10 +200,10 @@ class RayTracer{
     }
     traceRay(ray, scene, depth) {
         let color
-        let rayString=ray.start.stringify()+'|'+ray.dir.stringify()//JSON.stringify(ray)
-        if(this.cachingEnabled && rayString in this.rayCache){
+        let rayKey=Object.freeze(ray)//ray.start.stringify()+'|'+ray.dir.stringify()//JSON.stringify(ray)
+        if(this.cachingEnabled && rayKey in this.rayCache){
             this.stats.reused++
-            return this.rayCache[rayString]
+            return this.rayCache[rayKey]
         }
         let isect = this.intersections(ray, scene)
         if (isect === undefined) {
@@ -213,7 +213,7 @@ class RayTracer{
             color=this.shade(isect, scene, depth)
         }
         if(this.cachingEnabled){
-            this.rayCache[rayString]=color
+            this.rayCache[rayKey]=color
             this.stats.rayCacheSize++
         }
         return color
