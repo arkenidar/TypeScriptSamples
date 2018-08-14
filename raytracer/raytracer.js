@@ -18,7 +18,7 @@ class Vector{
         return new Vector(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x)
     }
     stringify(){
-        return this.x.toPrecision(4)+','+this.y.toPrecision(4)+','+this.z.toPrecision(3)
+        return this.x.toPrecision(3)+','+this.y.toPrecision(3)+','+this.z.toPrecision(3)
     }
 }
 
@@ -170,7 +170,7 @@ class Surfaces{
 class RayTracer{
     constructor(){
         this.maxDepth = 3
-        this.rayCache={}
+        this.rayCache=new Map()
         this.cachingEnabled=true
         this.stats={
             rayCacheSize:0,
