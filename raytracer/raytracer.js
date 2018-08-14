@@ -270,7 +270,7 @@ class RayTracer{
 }
 
 function defaultScene(x,z) {
-    let cameraPosition=new Vector(x,5,z)
+    let cameraPosition=new Vector(x,8,z)
     return {
         things: [
             new Plane(new Vector(0,1,0),0,Surfaces.computed),
