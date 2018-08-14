@@ -136,7 +136,7 @@ class Surfaces{
 
     static get computed(){
         class Computed{
-            static checker(pos){ return (((Math.floor(pos.z/1000) + Math.floor(pos.x/1000)) % 2) !== 0) }
+            static checker(pos){ return (((Math.floor(pos.z/10) + Math.floor(pos.x/10)) % 2) !== 0) }
             static circle(pos){ return (Math.sqrt(pos.z**2+pos.x**2) < 700) }
             static mixed(pos){
                 return this.checker(pos)&&this.circle(pos)
@@ -270,23 +270,23 @@ class RayTracer{
 }
 
 function defaultScene(x,z) {
-    let cameraPosition=new Vector(x,500,z)
+    let cameraPosition=new Vector(x,5,z)
     return {
         things: [
             new Plane(new Vector(0,1,0),0,Surfaces.computed),
 
-            new Sphere(new Vector(0, 200, 0), 200, Surfaces.shinyRed),
+            new Sphere(new Vector(0, 2, 0), 2, Surfaces.shinyRed),
 
-            new Sphere(new Vector(0, 300, 400), 100, Surfaces.shinyColor(Color.grey)),
-            new Sphere(new Vector(0, 300, -400), 100, Surfaces.shinyColor(Color.green)),
-            new Sphere(new Vector(400, 300, 0), 100, Surfaces.shinyColor(Color.black)),
-            new Sphere(new Vector(-400, 300, 0), 100, Surfaces.shinyColor(Color.yellow)),
+            new Sphere(new Vector(0, 3, 4), 1, Surfaces.shinyColor(Color.grey)),
+            new Sphere(new Vector(0, 3, -4), 1, Surfaces.shinyColor(Color.green)),
+            new Sphere(new Vector(4, 3, 0), 1, Surfaces.shinyColor(Color.black)),
+            new Sphere(new Vector(-4, 3, 0), 1, Surfaces.shinyColor(Color.yellow)),
         ],
         lights: [
             { pos: cameraPosition, color: new Color(1,1,1) },
-            { pos: new Vector(0,600,0), color: new Color(1,1,1) },
+            { pos: new Vector(0,6,0), color: new Color(1,1,1) },
         ],
-        camera: new Camera(cameraPosition, new Vector(0,500,0))
+        camera: new Camera(cameraPosition, new Vector(0,5,0))
     }
 }
 
@@ -297,8 +297,8 @@ let rayTracer=new RayTracer()
 let renderSceneWithCamera=(x,z)=>rayTracer.render(defaultScene(x,z),ctx,canv.width,canv.height)
 
 let rotationValue=()=>(all.cameraRotation.value/all.cameraRotation.max)*Math.PI*2
-let x=()=>Math.cos(rotationValue())*all.cameraZoom.value*500
-let z=()=>Math.sin(rotationValue())*all.cameraZoom.value*500
+let x=()=>Math.cos(rotationValue())*all.cameraZoom.value*5
+let z=()=>Math.sin(rotationValue())*all.cameraZoom.value*5
 
 let renderScene=()=>renderSceneWithCamera(x(),z())
 all.cameraRotation.oninput=all.cameraZoom.oninput=()=>setTimeout(renderScene)
