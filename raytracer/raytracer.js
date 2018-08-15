@@ -18,13 +18,6 @@ class Vector{
     static cross(v1, v2) {
         return new Vector(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x)
     }
-    toString(){
-        return parseInt(parseFloat(this.x).toPrecision(3)*1000)
-        +','+
-        parseInt(parseFloat(this.y).toPrecision(3)*1000)
-        +','+
-        parseInt(parseFloat(this.z).toPrecision(3)*1000)
-    }
 }
 
 class Color{
@@ -205,7 +198,7 @@ class RayTracer{
     }
     traceRay(ray, scene, depth) {
         let color
-        let rayKey=ray.start+'|'+ray.dir//JSON.stringify(ray)
+        let rayKey=JSON.stringify(ray)
         if(this.cachingEnabled && rayKey in this.rayCache){
             this.stats.reused++
             return this.rayCache[rayKey]
