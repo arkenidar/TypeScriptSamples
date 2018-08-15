@@ -1,4 +1,4 @@
-const mult=0.1
+const mult=1
 
 class Vector{
     constructor(x,y,z){
