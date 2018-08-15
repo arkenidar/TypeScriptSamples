@@ -1,0 +1,38 @@
+<meta charset="utf-8">
+
+<div><div>color by frequency</div><input type="range" name="frequency" min="1" max="255" oninput="color()"></div>
+<div><div>intensity by amplitude</div><input type="range" name="amplitude" min="0" max="255" oninput="color()"></div>
+
+<div style="width:50px; height:50px; background-color:cmyk(0,0,0,255);" id="colored"></div>
+
+failed attempt for lack of proper tool and the boycotting of cmyk format, plus lack of proper diffusion of related understanding.
+the concept, the goal remains. light is a sine wave with frequency and amplitude.
+
+<script>
+function CMYK2RGB(c, m, y, k){
+  //console.log(c,m,y,k)
+  c = (255 * c) / 100
+  m = (255 * m) / 100
+  y = (255 * y) / 100
+  k = (255 * k) / 100
+  
+  let
+  r = Math.round(((255 - c)* (255 - k)) / 255),
+  g = Math.round((255 - m) * (255 - k) / 255),
+  b = Math.round((255 - y) * (255 - k) / 255)
+  return [r,g,b]
+}
+
+function color(){
+    let frequency=document.querySelector('input[name=frequency]').value
+    let red=255-Math.abs(85*2-frequency)
+    let yellow=255-Math.abs(85*1-frequency)
+    let blue=255-Math.abs(85*0-frequency)
+    let [c,m,y]=[blue,red,yellow]
+    let amplitude=document.querySelector('input[name=amplitude]').value
+    let [r,g,b]=CMYK2RGB(c,m,y,amplitude)
+    let styleChange='rgb('+r+','+g+','+b+')'
+    console.log(styleChange)
+    document.querySelector('div#colored').style.backgroundColor=styleChange
+}
+</script>
