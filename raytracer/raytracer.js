@@ -1,3 +1,5 @@
+const mult=0.1
+
 class Vector{
     constructor(x,y,z){
         this.x=x
@@ -5,20 +7,23 @@ class Vector{
         this.z=z
     }
     static times(k, v) { return new Vector(k * v.x, k * v.y, k * v.z) }
+    static divide(v,k) { return new Vector(v.x/k, v.y/k, v.z/k) }
     static minus(v1, v2) { return new Vector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z) }
     static plus(v1, v2) { return new Vector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z) }
     static dot(v1, v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z }
     static mag(v) { return Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z) }
     static norm(v) {
-        let mag = Vector.mag(v)
-        let div = (mag === 0) ? Infinity : 1.0 / mag
-        return Vector.times(div, v)
+        return Vector.divide(v, Vector.mag(v))
     }
     static cross(v1, v2) {
         return new Vector(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x)
     }
     toString(){
-        return this.x.toPrecision(3)+','+this.y.toPrecision(3)+','+this.z.toPrecision(3)
+        return parseInt(parseFloat(this.x).toPrecision(3)*1000)
+        +','+
+        parseInt(parseFloat(this.y).toPrecision(3)*1000)
+        +','+
+        parseInt(parseFloat(this.z).toPrecision(3)*1000)
     }
 }
 
@@ -136,7 +141,7 @@ class Surfaces{
 
     static get computed(){
         class Computed{
-            static checker(pos){ return (((Math.floor(pos.z/10) + Math.floor(pos.x/10)) % 2) !== 0) }
+            static checker(pos){ return (((Math.floor(pos.z/(10*mult)) + Math.floor(pos.x/(10*mult))) % 2) !== 0) }
             static circle(pos){ return (Math.sqrt(pos.z**2+pos.x**2) < 700) }
             static mixed(pos){
                 return this.checker(pos)&&this.circle(pos)
@@ -170,7 +175,7 @@ class Surfaces{
 class RayTracer{
     constructor(){
         this.maxDepth = 3
-        this.rayCache=new Map()
+        this.rayCache={}//new Map()
         this.cachingEnabled=true
         this.stats={
             rayCacheSize:0,
@@ -270,23 +275,23 @@ class RayTracer{
 }
 
 function defaultScene(x,z) {
-    let cameraPosition=new Vector(x,8,z)
+    let cameraPosition=new Vector(x,8*mult,z)
     return {
         things: [
             new Plane(new Vector(0,1,0),0,Surfaces.computed),
 
-            new Sphere(new Vector(0, 2, 0), 2, Surfaces.shinyRed),
+            new Sphere(new Vector(0, 2*mult, 0), 2*mult, Surfaces.shinyRed),
 
-            new Sphere(new Vector(0, 3, 4), 1, Surfaces.shinyColor(Color.grey)),
-            new Sphere(new Vector(0, 3, -4), 1, Surfaces.shinyColor(Color.green)),
-            new Sphere(new Vector(4, 3, 0), 1, Surfaces.shinyColor(Color.black)),
-            new Sphere(new Vector(-4, 3, 0), 1, Surfaces.shinyColor(Color.yellow)),
+            new Sphere(new Vector(0, 3*mult, 4*mult), 1*mult, Surfaces.shinyColor(Color.grey)),
+            new Sphere(new Vector(0, 3*mult, -4*mult), 1*mult, Surfaces.shinyColor(Color.green)),
+            new Sphere(new Vector(4*mult, 3*mult, 0), 1*mult, Surfaces.shinyColor(Color.black)),
+            new Sphere(new Vector(-4*mult, 3*mult, 0), 1*mult, Surfaces.shinyColor(Color.yellow)),
         ],
         lights: [
             { pos: cameraPosition, color: new Color(1,1,1) },
-            { pos: new Vector(0,6,0), color: new Color(1,1,1) },
+            { pos: new Vector(0,6*mult,0), color: new Color(1,1,1) },
         ],
-        camera: new Camera(cameraPosition, new Vector(0,5,0))
+        camera: new Camera(cameraPosition, new Vector(0,5*mult,0))
     }
 }
 
@@ -297,8 +302,8 @@ let rayTracer=new RayTracer()
 let renderSceneWithCamera=(x,z)=>rayTracer.render(defaultScene(x,z),ctx,canv.width,canv.height)
 
 let rotationValue=()=>(all.cameraRotation.value/all.cameraRotation.max)*Math.PI*2
-let x=()=>Math.cos(rotationValue())*all.cameraZoom.value*5
-let z=()=>Math.sin(rotationValue())*all.cameraZoom.value*5
+let x=()=>Math.cos(rotationValue())*all.cameraZoom.value*5*mult
+let z=()=>Math.sin(rotationValue())*all.cameraZoom.value*5*mult
 
 let renderScene=()=>renderSceneWithCamera(x(),z())
 all.cameraRotation.oninput=all.cameraZoom.oninput=()=>setTimeout(renderScene)
