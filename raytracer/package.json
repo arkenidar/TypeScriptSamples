@@ -1,0 +1,17 @@
+{
+  "name": "raytracer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "raytracer.js",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
