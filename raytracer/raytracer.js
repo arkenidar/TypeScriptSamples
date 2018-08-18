@@ -38,7 +38,7 @@ class Color{
     static get yellow(){ return new Color(1,1,0) }
     static get green(){ return new Color(0,1,0) }
     static get red(){ return new Color(1,0,0) }
-    
+
     static get grey(){ return new Color(0.5, 0.5, 0.5) }
     static get black(){ return new Color(0.0, 0.0, 0.0) }
     static get background(){ return this.black }
