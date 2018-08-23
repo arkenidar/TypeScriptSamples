@@ -165,8 +165,8 @@ class Surfaces{
 
 class RayTracer{
     constructor(){
-        this.maxDepth = 3
-        this.rayCache={}//new Map()
+        this.maxDepth = 0
+        this.rayCache={}
         this.cachingEnabled=true
         this.stats={
             rayCacheSize:0,
@@ -271,7 +271,7 @@ function defaultScene(x,z) {
         things: [
             new Plane(new Vector(0,1,0),0,Surfaces.computed),
 
-            new Sphere(new Vector(0, 2, 0), 2, Surfaces.shinyRed),
+            new Sphere(new Vector(0, 6*(all.cameraRotation.value/all.cameraRotation.max), 0), 2, Surfaces.shinyRed),
 
             new Sphere(new Vector(0, 3, 4), 1, Surfaces.shinyColor(Color.grey)),
             new Sphere(new Vector(0, 3, -4), 1, Surfaces.shinyColor(Color.green)),
@@ -280,9 +280,9 @@ function defaultScene(x,z) {
         ],
         lights: [
             { pos: cameraPosition, color: new Color(1,1,1) },
-            { pos: new Vector(0,6,0), color: new Color(1,1,1) },
+            { pos: new Vector(0,10,0), color: new Color(1,1,1) },
         ],
-        camera: new Camera(cameraPosition, new Vector(0,5,0))
+        camera: new Camera(cameraPosition, new Vector(0,0,0))
     }
 }
 
@@ -300,7 +300,8 @@ let renderScene=()=>renderSceneWithCamera(x(),z())
 all.cameraRotation.oninput=all.cameraZoom.oninput=()=>setTimeout(renderScene)
 renderScene()
 
-let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.value)+4; if(all.cameraRotation.value==all.cameraRotation.max)all.cameraRotation.value=all.cameraRotation.min}
+let increment=2
+let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.value)+increment; if([all.cameraRotation.max,all.cameraRotation.min].indexOf(all.cameraRotation.value)!=-1)increment=-increment}
 let rotate=()=>{ rotateIncrement(); setTimeout(renderScene); setTimeout(rotate,100)}
 rotate()
 
