@@ -304,8 +304,20 @@ all.cameraRotation.oninput=all.cameraZoom.oninput=()=>setTimeout(renderScene)
 renderScene()
 
 let increment=2
-let rotateIncrement=()=>{all.cameraRotation.value=parseInt(all.cameraRotation.value)+increment; if([all.cameraRotation.max,all.cameraRotation.min].indexOf(all.cameraRotation.value)!=-1)increment=-increment}
-let rotate=()=>{ rotateIncrement(); setTimeout(renderScene); setTimeout(rotate,100)}
-rotate()
+function rotateIncrement(){
+    all.cameraRotation.value=parseInt(all.cameraRotation.value)+increment
+    if([all.cameraRotation.max,all.cameraRotation.min].indexOf(all.cameraRotation.value)!=-1){
+        increment=-increment
+        rayTracer.stats.reused=0
+    }
+    stats()
+}
+function rotateAndRender(){
+    rotateIncrement()
+    setTimeout(renderScene)
+}
+setInterval(rotateAndRender,100)
 
-setInterval(()=>all.stats.innerHTML='rayCacheSize:'+rayTracer.stats.rayCacheSize+' reused:'+rayTracer.stats.reused,1500)
+function stats(){
+    all.stats.innerHTML='rayCacheSize:'+rayTracer.stats.rayCacheSize+' reused:'+rayTracer.stats.reused
+}
