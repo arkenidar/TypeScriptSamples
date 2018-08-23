@@ -165,7 +165,7 @@ class Surfaces{
 
 class RayTracer{
     constructor(){
-        this.maxDepth = 0
+        this.maxDepth=1
         this.rayCache={}
         this.cachingEnabled=true
         this.stats={
@@ -220,8 +220,11 @@ class RayTracer{
         let normal = isect.thing.normal(pos)
         let reflectDir = Vector.minus(d, Vector.times(2, Vector.times(Vector.dot(normal, d), normal)))
         let naturalColor = Color.plus(Color.background, this.getNaturalColor(isect.thing, pos, normal, reflectDir, scene))
-        let reflectedColor = (depth >= this.maxDepth) ? Color.grey : this.getReflectionColor(isect.thing, pos, normal, reflectDir, scene, depth)
-        return Color.plus(naturalColor, reflectedColor)
+        if(depth<this.maxDepth){
+            let reflectedColor = this.getReflectionColor(isect.thing, pos, normal, reflectDir, scene, depth)
+            naturalColor=Color.plus(naturalColor, reflectedColor)    
+        }
+        return naturalColor
     }
     getReflectionColor(thing, pos, normal, rd, scene, depth) {
         return Color.scale(thing.surface.reflect(pos), this.traceRay({ start: pos, dir: rd }, scene, depth + 1))
